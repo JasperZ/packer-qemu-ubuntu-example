@@ -1,0 +1,57 @@
+---
+
+- name: 'Configure system'
+  hosts: '127.0.0.1'
+  connection: 'local'
+
+  tasks:
+  # Other tasks before system is imaged go here
+
+  - name: 'Prepare system for image creation'
+    block:
+    - name: 'Disable all datasources for cloud-init except for NoCloud'
+      copy:
+        content: 'datasource _list: [ NoCloud ]'
+        dest: '/etc/cloud/cloud.cfg.d/90_dpkg.cfg'
+        owner: 'root'
+        group: 'root'
+        mode: '0644'
+
+    - name: 'Find netplan configs'
+      find:
+        paths: '/etc/netplan'
+      register: find_result
+    
+    - name: 'Remove netplan configs'
+      file:
+        path: '{{ item.path }}'
+        state: 'absent'
+      with_items: '{{ find_result.files }}'
+
+    - name: 'Clean cloudinit cache'
+      command: 'cloud-init clean'
+
+    - name: 'Delete "subiquity-disable-cloudinit-networking.cfg"'
+      file:
+        path: '/etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg'
+        state: 'absent'
+
+    - name: 'Delete "99-installer.cfg"'
+      file:
+        path: '/etc/cloud/cloud.cfg.d/99-installer.cfg'
+        state: 'absent'
+    
+    - name: 'Delete "machine-id"'
+      file:
+        path: '/etc/machine-id'
+        state: 'absent'
+      
+    - name: 'Recreate empty file "machine-id"'
+      file:
+        path: '/etc/machine-id'
+        owner: 'root'
+        group: 'root'
+        mode: '0444'
+        state: 'touch'
+    become: true
+        
