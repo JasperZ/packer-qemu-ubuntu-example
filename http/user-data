@@ -13,7 +13,7 @@ autoinstall:
   identity:
     hostname: ubuntu
     username: packer
-    password: "AkwAM23UR69fwmXfRtR.9KnImYeu09uPp4WS6c/HEGkJKN.jToje8KN88bEOBEAlS.NdDf3HyJdNxaFjXJb9C1" # packer (generated with 'mkpasswd -m sha-512')
+    password: "$6$8EAIOdjCJNYnddaF$HYkpQDA4yQu2o0KCXBzkyVSwx6x4Dk8xtVrc7IcthMX9ibdSHWSN.EFkpYklCBq5s89ripz1opp899fNnw0tY/" # packer (generated with 'mkpasswd -m sha-512')
   ssh:
     install-server: yes
 #       authorized-keys:
